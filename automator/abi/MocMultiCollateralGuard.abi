@@ -1,0 +1,1540 @@
+[
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "BucketAlreadyExists",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BucketDoesNotExist",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BucketEmpty",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BucketNotLiquidated",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "CoinbaseRebalanceTransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExecutionFeePaymentFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidParams",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidValue",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LiquidationNotAvailable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MicroLiquidationNotAvailable",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "dataProviderAddress_",
+          "type": "address"
+        }
+      ],
+      "name": "MissingProviderData",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "priceProviderAddress_",
+          "type": "address"
+        }
+      ],
+      "name": "MissingProviderPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoTargetBucketAvailableToRebalance",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotAuthorizedChanger",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotWhenPaused",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyPauser",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyWhilePaused",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Unstoppable",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "previousAdmin",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "AdminChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "beacon",
+          "type": "address"
+        }
+      ],
+      "name": "BeaconUpgraded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "bucketIndex_",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "contract IPriceProvider",
+              "name": "acCoinbasePriceProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IDataProvider",
+              "name": "maxACtoSwapProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rtcThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "microLiquidationThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "penaltyRate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint24[]",
+              "name": "swapFee",
+              "type": "uint24[]"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct BucketParams",
+          "name": "bucketParams_",
+          "type": "tuple"
+        }
+      ],
+      "name": "BucketChange",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "originBucket",
+          "type": "address"
+        }
+      ],
+      "name": "BucketLiquidated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "executor_",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "originBucket",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "targetBucket_",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "targetTP_",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACtoSwap_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACOut_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qTPtoRebalance_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACExecFee_",
+          "type": "uint256"
+        }
+      ],
+      "name": "MicroLiquidationExecuted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "executor_",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "originBucket",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "targetBucket_",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "targetTP_",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACtoSwap_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACOut_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qTPtoRebalance_",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qACExecFee_",
+          "type": "uint256"
+        }
+      ],
+      "name": "PartialLiquidationExecuted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "Upgraded",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket",
+          "type": "address"
+        }
+      ],
+      "name": "acCoinbasePriceProvider",
+      "outputs": [
+        {
+          "internalType": "contract IPriceProvider",
+          "name": "acCoinbasePriceProvider",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "contract IPriceProvider",
+              "name": "acCoinbasePriceProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IDataProvider",
+              "name": "maxACtoSwapProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rtcThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "microLiquidationThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "penaltyRate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint24[]",
+              "name": "swapFee",
+              "type": "uint24[]"
+            }
+          ],
+          "internalType": "struct BucketParams",
+          "name": "params_",
+          "type": "tuple"
+        }
+      ],
+      "name": "addBucket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "bucketIndex",
+      "outputs": [
+        {
+          "internalType": "uint240",
+          "name": "index",
+          "type": "uint240"
+        },
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "liquidated",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "buckets",
+      "outputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps_",
+          "type": "uint256[][]"
+        }
+      ],
+      "name": "calcCombinedCglbWithPrices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps_",
+          "type": "uint256[][]"
+        }
+      ],
+      "name": "calcCombinedCtargemaCAWithPrices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps_",
+          "type": "uint256[][]"
+        }
+      ],
+      "name": "calcNormalizationFactorsWithPrices",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "normalizationFactors",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps_",
+          "type": "uint256[][]"
+        }
+      ],
+      "name": "calcRealTCAvailableToRedeemWithPrices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "realTCAvailableToRedeem",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tp_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps_",
+          "type": "uint256[][]"
+        }
+      ],
+      "name": "calcRealTPAvailableToMintWithPrices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "realTPAvailableToMint",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IGovernor",
+          "name": "newGovernor_",
+          "type": "address"
+        }
+      ],
+      "name": "changeGovernor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "coinbaseRC20Wrapper",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "contract IPriceProvider",
+              "name": "acCoinbasePriceProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IDataProvider",
+              "name": "maxACtoSwapProvider",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rtcThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "microLiquidationThrld",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "penaltyRate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint24[]",
+              "name": "swapFee",
+              "type": "uint24[]"
+            }
+          ],
+          "internalType": "struct BucketParams",
+          "name": "params_",
+          "type": "tuple"
+        }
+      ],
+      "name": "editBucket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "executionFeeRecipient_",
+          "type": "address"
+        }
+      ],
+      "name": "execLiquidation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "executionFeeRecipient_",
+          "type": "address"
+        }
+      ],
+      "name": "execMicroLiquidation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "executionFeeRecipient_",
+          "type": "address"
+        }
+      ],
+      "name": "execute",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "liquidatedBucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address payable",
+          "name": "executionFeeRecipient_",
+          "type": "address"
+        }
+      ],
+      "name": "executeLiquidatedBucket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "baseGasPrice_",
+          "type": "uint256"
+        }
+      ],
+      "name": "getACAndTPtoRebalanceOnLiquidation",
+      "outputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "targetBucket",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "targetTP",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qACToSwap",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qTPToRebalance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qACExecFee",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "baseGasPrice_",
+          "type": "uint256"
+        }
+      ],
+      "name": "getACAndTPtoRebalanceOnMicroLiquidation",
+      "outputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "targetBucket",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "targetTP",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qACToSwap",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qTPToRebalance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "qACExecFee",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBucketAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBucketsPACtps",
+      "outputs": [
+        {
+          "internalType": "uint256[][]",
+          "name": "bucketsPACtps",
+          "type": "uint256[][]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        }
+      ],
+      "name": "getCombinedAndTC",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realTCAvailableToRedeem",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "bucketPACtps",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tp_",
+          "type": "address"
+        }
+      ],
+      "name": "getCombinedAndTCAndTP",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realTCAvailableToRedeem",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realTPAvailableToMint",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "bucketPACtps",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tp_",
+          "type": "address"
+        }
+      ],
+      "name": "getCombinedAndTP",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realTPAvailableToMint",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "bucketPACtps",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCombinedCglb",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCombinedCtargemaCA",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        }
+      ],
+      "name": "getCombinedValues",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "combinedCglb",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "combinedCtargemaCA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "bucketPACtps",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "useMaxLastPublicationBlock_",
+          "type": "bool"
+        }
+      ],
+      "name": "getLastPublicationBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "lastPublicationBlock",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getNormalizationFactors",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "normalizationFactors",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        }
+      ],
+      "name": "getRealTCAvailableToRedeem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "realTCAvailableToRedeem",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tp_",
+          "type": "address"
+        }
+      ],
+      "name": "getRealTPAvailableToMint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "realTPAvailableToMint",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "governor",
+      "outputs": [
+        {
+          "internalType": "contract IGovernor",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "governor_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pauser_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "swapRouter_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "coinbaseRC20Wrapper_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "microLiquidationExecCost_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "liquidationExecCost_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxOperPerBatch_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "useMaxLastPublicationBlock_",
+          "type": "bool"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        }
+      ],
+      "name": "isLiquidationAvailable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket_",
+          "type": "address"
+        }
+      ],
+      "name": "isMicroLiquidationAvailable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "liquidationExecCost",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "makeStoppable",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "makeUnstoppable",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket",
+          "type": "address"
+        }
+      ],
+      "name": "maxACtoSwapProvider",
+      "outputs": [
+        {
+          "internalType": "contract IDataProvider",
+          "name": "maxACtoSwapProvider",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxOperPerBatch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "microLiquidationExecCost",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket",
+          "type": "address"
+        }
+      ],
+      "name": "microLiquidationThrld",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "microLiquidationThrld",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pauser",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket",
+          "type": "address"
+        }
+      ],
+      "name": "penaltyRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "penaltyRate",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proxiableUUID",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "readyToExecute",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "bucket",
+          "type": "address"
+        }
+      ],
+      "name": "rtcThrld",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "rtcThrld",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "maxOperPerBatch_",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMaxOperPerBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newPauser_",
+          "type": "address"
+        }
+      ],
+      "name": "setPauser",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "useMaxLastPublicationBlock_",
+          "type": "bool"
+        }
+      ],
+      "name": "setUseMaxLastPublicationBlock",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "stoppable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract MocOperations",
+          "name": "originBucket",
+          "type": "address"
+        },
+        {
+          "internalType": "contract MocOperations",
+          "name": "targetBucket",
+          "type": "address"
+        }
+      ],
+      "name": "swapFee",
+      "outputs": [
+        {
+          "internalType": "uint24",
+          "name": "swapFee",
+          "type": "uint24"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "swapRouter",
+      "outputs": [
+        {
+          "internalType": "contract ISwapRouter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        }
+      ],
+      "name": "upgradeTo",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "upgradeToAndCall",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "useMaxLastPublicationBlock",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ]

@@ -1,6 +1,6 @@
 {
-  "uri": "https://public-node.testnet.rsk.co",
-  "chain_id": 31,
+  "uri": "https://sepolia-rollup.arbitrum.io/rpc",
+  "chain_id": 421614,
   "timeout": 180,
   "gas_price_multiply_factor": 1.01,
   "tasks": {
@@ -24,24 +24,7 @@
     }
   },
   "addresses": {
-    "MocMultiCollateralGuard": "0x29166156f32dD3ac435FeEe0028Aaa4151Bd8908"
-  },
-  "collateral": [
-    {
-      "name": "BPRO",
-      "type": "rc20"
-    },
-    {
-      "name": "DOC",
-      "type": "rc20"
-    }
-  ],
-  "pegged": [
-    {
-      "name": "ARS"
-    },
-    {
-      "name": "COP"
-    }
-  ]
+    "MocMultiCollateralGuard": "0xAF9469A5E935890F981ECF2b6C14E6D45DA4A364",
+    "Multicall2": "0xcA11bde05977b3631167028862bE2a173976CA11"
+  }
 }

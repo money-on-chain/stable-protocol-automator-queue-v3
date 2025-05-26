@@ -10,7 +10,7 @@ from functools import wraps
 from pebble import sighandler, ProcessExpired, ThreadPool
 
 from .logger import log
-from .utils import aws_put_metric_heart_beat
+
 
 
 class TerminateSignal(Exception):
