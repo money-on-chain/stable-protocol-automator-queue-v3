@@ -1,6 +1,6 @@
-# Stable Protocol Automator Queue Executor v2
+# Stable Protocol Automator Queue Executor v3 (Multicollateral)
 
-## Warning: This is only for version 2 of the main contracts.
+## Warning: This is only for version 3 of the main contracts.
 
 This is a backend queue executor job. Periodic tasks that runs different jobs, 
 that call the contracts and asks if they are ready to execute it. This jobs 
@@ -9,6 +9,8 @@ run async of the app, and call directly to the contract through node.
 ### Currents tasks
 
  1. Queue Execute. Execute queued operations.
+ 2. Execute Micro liquidations.
+ 3. Execute liquidations. 
   
 ### Usage
 
