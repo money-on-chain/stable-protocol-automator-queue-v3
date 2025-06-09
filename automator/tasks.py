@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.6'
+__VERSION__ = '1.0.7'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -127,6 +127,16 @@ class Automator(PendingTransactionsTasksManager):
     @on_pending_transactions
     def execute_micro_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
 
+        # check if is valid price before send
+        if not self.is_valid_tp_price():
+            log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
+            return
+
+        # check if is valid ac coinbase price before send
+        if not self.is_valid_ac_coinbase_price():
+            log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
+            return
+
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_micro_liquidation_available(bucket)
         if ready_to_execute:
@@ -134,11 +144,6 @@ class Automator(PendingTransactionsTasksManager):
             # return if there are pending transactions
             if task_result.get('pending_transactions', None):
                 return task_result
-
-            # check if is valid price before send
-            if not self.is_valid_tp_price():
-                log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-                return
 
             info_transaction = self.info_tx()
 
@@ -176,6 +181,16 @@ class Automator(PendingTransactionsTasksManager):
     @on_pending_transactions
     def execute_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
 
+        # check if is valid price before send
+        if not self.is_valid_tp_price():
+            log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
+            return
+
+        # check if is valid ac coinbase price before send
+        if not self.is_valid_ac_coinbase_price():
+            log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
+            return
+
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_liquidation_available(bucket)
         if ready_to_execute:
@@ -183,16 +198,6 @@ class Automator(PendingTransactionsTasksManager):
             # return if there are pending transactions
             if task_result.get('pending_transactions', None):
                 return task_result
-
-            # check if is valid price before send
-            if not self.is_valid_tp_price():
-                log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-                return
-
-            # check if is valid ac coinbase price before send
-            if not self.is_valid_ac_coinbase_price():
-                log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-                return
 
             info_transaction = self.info_tx()
 
