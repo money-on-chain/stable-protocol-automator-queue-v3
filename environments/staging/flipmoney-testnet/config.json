@@ -7,18 +7,41 @@
     "execute": {
       "interval": 5,
       "wait_timeout": 240,
-      "gas_limit": 4500000,
-      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
-      "cloudwatch": {
-        "metric_name": "FLIPMONEY-QUEUE-TESTNET",
-        "dimensions_name": "JOBS",
-        "dimensions_value": "Error",
-        "namespace": "MOC/EXCEPTIONS"
-      }
+      "gas_limit": 2500000,
+      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
+    },
+    "execute_micro_liquidation": {
+      "interval": 5,
+      "wait_timeout": 240,
+      "gas_limit": 2500000,
+      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
+    },
+    "execute_liquidation": {
+      "interval": 5,
+      "wait_timeout": 240,
+      "gas_limit": 2500000,
+      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
     }
   },
   "addresses": {
-    "MocQueue": "0x7124A89A06E02A5f0623d38fd106880A8A4FBC0c",
-    "Multicall2": "0xaf7be1ef9537018feda5397d9e3bb9a1e4e27ac8"
-  }
+    "MocMultiCollateralGuard": "0x29166156f32dD3ac435FeEe0028Aaa4151Bd8908"
+  },
+  "collateral": [
+    {
+      "name": "BPRO",
+      "type": "rc20"
+    },
+    {
+      "name": "DOC",
+      "type": "rc20"
+    }
+  ],
+  "pegged": [
+    {
+      "name": "ARS"
+    },
+    {
+      "name": "COP"
+    }
+  ]
 }

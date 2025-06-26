@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.7'
+__VERSION__ = '1.0.8'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -90,7 +90,7 @@ class Automator(PendingTransactionsTasksManager):
             # check if is valid price before send
             if not self.is_valid_tp_price():
                 log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-                return
+                return task_result
 
             info_transaction = self.info_tx()
 
@@ -130,12 +130,12 @@ class Automator(PendingTransactionsTasksManager):
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_micro_liquidation_available(bucket)
@@ -184,12 +184,12 @@ class Automator(PendingTransactionsTasksManager):
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_liquidation_available(bucket)
@@ -290,35 +290,34 @@ class AutomatorTasks(Automator):
             self.contracts_loaded['Moc'].append(moc_bucket)
             self.moc_buckets_addresses.append(moc_bucket_address)
 
-        # Get TP Price provider... in multi-collateral we have the assumption that all collateral
-        # have the same TPs, this why only watch the first collateral only
+            # Get TP Price provider... in multi-collateral we have the assumption that all collateral
+            # have the same TPs, this why only watch the first collateral only
 
-        price_providers = []
-        bucket_index = 0
-        for tp_i, tp in enumerate(self.config['pegged']):
-            try:
-                tp_address = self.contracts_loaded["Moc"][bucket_index].tp_tokens(tp_i)
-            except Web3RPCError:
-                continue
-            if not tp_address:
-                break
-            tp_index = self.contracts_loaded["Moc"][bucket_index].pegged_token_index(tp_address)
-            # result: tp_index = [index, enabled]
-            if not tp_index:
-                break
-            tp_item = self.contracts_loaded["Moc"][bucket_index].peg_container(tp_index[0])
-            # result: tp_item = [index, price provider]
-            price_providers.append(tp_item[1])
+            price_providers = []
+            for tp_i, tp in enumerate(self.config['pegged']):
+                try:
+                    tp_address = self.contracts_loaded["Moc"][ca_index].tp_tokens(tp_i)
+                except Web3RPCError:
+                    continue
+                if not tp_address:
+                    break
+                tp_index = self.contracts_loaded["Moc"][ca_index].pegged_token_index(tp_address)
+                # result: tp_index = [index, enabled]
+                if not tp_index:
+                    break
+                tp_item = self.contracts_loaded["Moc"][ca_index].peg_container(tp_index[0])
+                # result: tp_item = [index, price provider]
+                price_providers.append(tp_item[1])
 
-        # load TP price providers
-        self.contracts_loaded["PriceProviders"] = []
-        for pp_address_index, pp_address in enumerate(price_providers):
-            log.info("Price Provider TP ({0}) using address: {1}".format(
-                self.config['pegged'][pp_address_index]['name'], pp_address))
-            pp = PriceProvider(
-                self.connection_helper.connection_manager,
-                contract_address=pp_address)
-            self.contracts_loaded["PriceProviders"].append(pp)
+            # load TP price providers
+            self.contracts_loaded["PriceProviders"] = []
+            for pp_address_index, pp_address in enumerate(price_providers):
+                log.info("Price Provider TP ({0}) using address: {1}".format(
+                    self.config['pegged'][pp_address_index]['name'], pp_address))
+                pp = PriceProvider(
+                    self.connection_helper.connection_manager,
+                    contract_address=pp_address)
+                self.contracts_loaded["PriceProviders"].append(pp)
 
         # Get AC Coinbase price provider if need it
         self.contracts_loaded["PriceProvidersACCoinbase"] = []
