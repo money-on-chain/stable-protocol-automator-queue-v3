@@ -118,13 +118,22 @@ class MocQueue(Contract):
             *args,
             **kwargs):
 
-        tx_hash = self.connection_manager.send_function_transaction(
-            self.sc.functions.execute,
-            *args,
-            **kwargs
-        )
+        simulation = False
+        if 'simulation' in kwargs:
+            if kwargs['simulation']:
+                simulation = True
+            kwargs.pop('simulation')
 
-        return tx_hash
+        if simulation:
+            result = self.sc.functions.execute(*args).call(**kwargs)
+        else:
+            result = self.connection_manager.send_function_transaction(
+                self.sc.functions.execute,
+                *args,
+                **kwargs
+            )
+
+        return result
 
 
 class MocMultiCollateralGuard(Contract):
@@ -151,13 +160,22 @@ class MocMultiCollateralGuard(Contract):
             *args,
             **kwargs):
 
-        tx_hash = self.connection_manager.send_function_transaction(
-            self.sc.functions.execute,
-            *args,
-            **kwargs
-        )
+        simulation = False
+        if 'simulation' in kwargs:
+            if kwargs['simulation']:
+                simulation = True
+            kwargs.pop('simulation')
 
-        return tx_hash
+        if simulation:
+            result = self.sc.functions.execute(*args).call(**kwargs)
+        else:
+            result = self.connection_manager.send_function_transaction(
+                self.sc.functions.execute,
+                *args,
+                **kwargs
+            )
+
+        return result
 
     def ready_to_execute(self):
         return self.sc.functions.readyToExecute().call()
@@ -167,13 +185,22 @@ class MocMultiCollateralGuard(Contract):
             *args,
             **kwargs):
 
-        tx_hash = self.connection_manager.send_function_transaction(
-            self.sc.functions.executeLiquidatedBucket,
-            *args,
-            **kwargs
-        )
+        simulation = False
+        if 'simulation' in kwargs:
+            if kwargs['simulation']:
+                simulation = True
+            kwargs.pop('simulation')
 
-        return tx_hash
+        if simulation:
+            result = self.sc.functions.executeLiquidatedBucket(*args).call(**kwargs)
+        else:
+            result = self.connection_manager.send_function_transaction(
+                self.sc.functions.executeLiquidatedBucket,
+                *args,
+                **kwargs
+            )
+
+        return result
 
     def is_micro_liquidation_available(
             self,
@@ -194,26 +221,44 @@ class MocMultiCollateralGuard(Contract):
             *args,
             **kwargs):
 
-        tx_hash = self.connection_manager.send_function_transaction(
-            self.sc.functions.execMicroLiquidation,
-            *args,
-            **kwargs
-        )
+        simulation = False
+        if 'simulation' in kwargs:
+            if kwargs['simulation']:
+                simulation = True
+            kwargs.pop('simulation')
 
-        return tx_hash
+        if simulation:
+            result = self.sc.functions.execMicroLiquidation(*args).call(**kwargs)
+        else:
+            result = self.connection_manager.send_function_transaction(
+                self.sc.functions.execMicroLiquidation,
+                *args,
+                **kwargs
+            )
+
+        return result
 
     def execute_liquidation(
             self,
             *args,
             **kwargs):
 
-        tx_hash = self.connection_manager.send_function_transaction(
-            self.sc.functions.execLiquidation,
-            *args,
-            **kwargs
-        )
+        simulation = False
+        if 'simulation' in kwargs:
+            if kwargs['simulation']:
+                simulation = True
+            kwargs.pop('simulation')
 
-        return tx_hash
+        if simulation:
+            result = self.sc.functions.execLiquidation(*args).call(**kwargs)
+        else:
+            result = self.connection_manager.send_function_transaction(
+                self.sc.functions.execLiquidation,
+                *args,
+                **kwargs
+            )
+
+        return result
 
     def buckets(self, index):
         return self.sc.functions.buckets(index).call()

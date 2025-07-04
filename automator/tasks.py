@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.8'
+__VERSION__ = '1.0.9'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -95,6 +95,13 @@ class Automator(PendingTransactionsTasksManager):
             info_transaction = self.info_tx()
 
             try:
+                # First simulate the tx, this is to avoid sending a revert tx and consume gas of
+                # the automator
+                self.contracts_loaded["MocMultiCollateralGuard"].execute(
+                    self.config['tasks']['execute']['fee_recipient'],
+                    simulation=True
+                )
+
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute(
                     self.config['tasks']['execute']['fee_recipient'],
                     gas_limit=self.config['tasks']['execute']['gas_limit'],
@@ -148,6 +155,14 @@ class Automator(PendingTransactionsTasksManager):
             info_transaction = self.info_tx()
 
             try:
+                # First simulate the tx, this is to avoid sending a revert tx and consume gas of
+                # the automator
+                self.contracts_loaded["MocMultiCollateralGuard"].execute_micro_liquidation(
+                    bucket,
+                    self.config['tasks']['execute_micro_liquidation']['fee_recipient'],
+                    simulation=True)
+
+                # if it's ok send the real tx
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_micro_liquidation(
                     bucket,
                     self.config['tasks']['execute_micro_liquidation']['fee_recipient'],
@@ -202,6 +217,14 @@ class Automator(PendingTransactionsTasksManager):
             info_transaction = self.info_tx()
 
             try:
+                # First simulate the tx, this is to avoid sending a revert tx and consume gas of
+                # the automator
+                self.contracts_loaded["MocMultiCollateralGuard"].execute_liquidation(
+                    bucket,
+                    self.config['tasks']['execute_liquidation']['fee_recipient'],
+                    simulation=True
+                )
+
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_liquidation(
                     bucket,
                     self.config['tasks']['execute_liquidation']['fee_recipient'],
