@@ -12,6 +12,9 @@ from pebble import sighandler, ProcessExpired, ThreadPool
 from .logger import log
 
 
+def _gas_price_wei(tx):
+    return int(tx['gas_price'] * 10 ** 18)
+
 
 class TerminateSignal(Exception):
     """Traceback wrapper for exceptions in remote process.
@@ -117,6 +120,7 @@ class TransactionsTasksManager:
                     if self.tasks:
                         for key in self.tasks:
                             self.schedule_task(pool, self.tasks[key], global_manager=global_manager)
+                    sleep(0.1)
             except TerminateSignal:
                 log.info("Terminal Signal received... Going to shutdown... stop pooling now!")
                 #pool.stop()
@@ -195,7 +199,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                         " Elapsed: [{4}]".format(
                             action_label,
                             Web3.to_hex(tx['hash']),
-                            Web3.from_wei(tx['gas_price'], 'gwei'),
+                            _gas_price_wei(tx),
                             tx['nonce'],
                             elapsed.seconds
                         )
@@ -236,7 +240,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                             " Elapsed: [{4}]".format(
                                 action_label,
                                 Web3.to_hex(tx['hash']),
-                                Web3.to_wei(tx['gas_price'], 'ether'),
+                                _gas_price_wei(tx),
                                 tx['nonce'],
                                 elapsed.seconds
                             )
@@ -259,7 +263,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                         " Elapsed: [{4}]".format(
                             action_label,
                             Web3.to_hex(tx['hash']),
-                            Web3.to_wei(tx['gas_price'], 'ether'),
+                            _gas_price_wei(tx),
                             tx['nonce'],
                             elapsed.seconds
                         )

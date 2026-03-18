@@ -11,6 +11,10 @@ run async of the app, and call directly to the contract through node.
  1. Queue Execute. Execute queued operations.
  2. Execute Micro liquidations.
  3. Execute liquidations. 
+
+Optional settings:
+
+`max_fee_per_gas` and `max_priority_fee_per_gas` can be set at the top level of the config to send EIP-1559 style transactions.
   
 ### Usage
 

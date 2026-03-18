@@ -27,8 +27,8 @@ WORKDIR /home/www-data/app/automator/
 COPY app_run_automator.py ./
 ADD $CONFIG ./config.json
 COPY automator/ ./automator/
-ENV PATH "$PATH:/home/www-data/app/automator/"
-ENV AWS_DEFAULT_REGION=us-west-1
-ENV PYTHONPATH "${PYTONPATH}:/home/www-data/app/automator/"
+ENV PATH="$PATH:/home/www-data/app/automator/"
+ENV AWS_DEFAULT_REGION="us-west-1"
+ENV PYTHONPATH="/home/www-data/app/automator/"
 
 CMD ["python", "./app_run_automator.py"]
