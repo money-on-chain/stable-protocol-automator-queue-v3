@@ -45,10 +45,10 @@ class Automator(PendingTransactionsTasksManager):
         # Multiply factor of the using gas price
         calculated_gas_price = node_gas_price * decimal.Decimal(self.config['gas_price_multiply_factor'])
         max_fee_per_gas = None
-        if max_fee_per_gas in self.config:
+        if 'max_fee_per_gas' in self.config:
             max_fee_per_gas = self.config['max_fee_per_gas']
         max_priority_fee_per_gas = None
-        if max_priority_fee_per_gas in self.config:
+        if 'max_priority_fee_per_gas' in self.config:
             max_priority_fee_per_gas = self.config['max_priority_fee_per_gas']
 
         return dict(
@@ -67,6 +67,26 @@ class Automator(PendingTransactionsTasksManager):
                 break
         return valid
 
+    def are_valid_all_bucket_prices(self):
+        for bucket in self.contracts_loaded["Moc"]:
+            for tp_index, _ in enumerate(self.config['pegged']):
+                try:
+                    tp_address = bucket.tp_tokens(tp_index)
+                except Web3RPCError:
+                    continue
+                if not tp_address or tp_address == "0x0000000000000000000000000000000000000000":
+                    continue
+                peg_index = bucket.pegged_token_index(tp_address)
+                if not peg_index:
+                    return False
+                peg_data = bucket.peg_container(peg_index[0])
+                price_provider = PriceProvider(
+                    self.connection_helper.connection_manager,
+                    contract_address=peg_data[1])
+                if not price_provider.peek()[1]:
+                    return False
+        return True
+
     def is_valid_ac_coinbase_price(self):
         valid = True
         for pp in self.contracts_loaded["PriceProvidersACCoinbase"]:
@@ -79,24 +99,17 @@ class Automator(PendingTransactionsTasksManager):
     @on_pending_transactions
     def execute(self, task=None, global_manager=None, task_result=None):
 
-        # If ready to execute the queue?
-        ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].ready_to_execute()
-        if ready_to_execute:
+        guard = self.contracts_loaded["MocMultiCollateralGuard"]
+        if not guard.paused() and self.are_valid_all_bucket_prices() and guard.ready_to_execute():
 
             # return if there are pending transactions
             if task_result.get('pending_transactions', None):
                 return task_result
 
-            # check if is valid price before send
-            if not self.is_valid_tp_price():
-                log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-                return
-
             info_transaction = self.info_tx()
 
             try:
-                tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute(
-                    self.config['tasks']['execute']['fee_recipient'],
+                tx_hash = guard.execute(
                     gas_limit=self.config['tasks']['execute']['gas_limit'],
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
@@ -150,7 +163,6 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_micro_liquidation(
                     bucket,
-                    self.config['tasks']['execute_micro_liquidation']['fee_recipient'],
                     gas_limit=self.config['tasks']['execute_micro_liquidation']['gas_limit'],
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
@@ -204,7 +216,6 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_liquidation(
                     bucket,
-                    self.config['tasks']['execute_liquidation']['fee_recipient'],
                     gas_limit=self.config['tasks']['execute_liquidation']['gas_limit'],
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],

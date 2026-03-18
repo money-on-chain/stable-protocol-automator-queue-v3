@@ -8,7 +8,6 @@
       "interval": 5,
       "wait_timeout": 240,
       "gas_limit": 4500000,
-      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3",
       "cloudwatch": {
         "metric_name": "ROC-QUEUE-ALPHA-TESTNET",
         "dimensions_name": "JOBS",

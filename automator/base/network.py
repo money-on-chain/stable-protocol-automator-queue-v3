@@ -16,6 +16,7 @@ import json
 import os
 import datetime
 import logging
+from time import sleep
 
 
 class BaseConnectionManager(object):
@@ -270,7 +271,25 @@ class ConnectionManager(BaseConnectionManager):
         transaction_hash = self.web3.eth.send_raw_transaction(
             signed.raw_transaction)
 
+        self.wait_pending_nonce_ack(self.accounts[default_account].address, nonce + 1)
+
         return transaction_hash
+
+    def wait_pending_nonce_ack(self, account_address, expected_nonce, retries=10, interval_seconds=0.5):
+        """Wait briefly until the RPC pending nonce reflects the just-sent transaction."""
+
+        for _ in range(retries):
+            pending_nonce = self.web3.eth.get_transaction_count(account_address, "pending")
+            if pending_nonce >= expected_nonce:
+                return True
+            sleep(interval_seconds)
+
+        self.log.warning(
+            "Pending nonce acknowledgement timeout. Address: %s Expected nonce: %s",
+            account_address,
+            expected_nonce
+        )
+        return False
 
 
 if __name__ == '__main__':

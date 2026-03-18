@@ -162,6 +162,9 @@ class MocMultiCollateralGuard(Contract):
     def ready_to_execute(self):
         return self.sc.functions.readyToExecute().call()
 
+    def paused(self):
+        return self.sc.functions.paused().call()
+
     def execute_liquidated_bucket(
             self,
             *args,
@@ -217,6 +220,9 @@ class MocMultiCollateralGuard(Contract):
 
     def buckets(self, index):
         return self.sc.functions.buckets(index).call()
+
+    def get_bucket_amount(self):
+        return self.sc.functions.getBucketAmount().call()
 
     def ac_coinbase_price_provider(self, moc_bucket):
         return self.sc.functions.acCoinbasePriceProvider(moc_bucket).call()

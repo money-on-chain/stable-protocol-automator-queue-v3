@@ -7,20 +7,17 @@
     "execute": {
       "interval": 5,
       "wait_timeout": 240,
-      "gas_limit": 2500000,
-      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
+      "gas_limit": 2500000
     },
     "execute_micro_liquidation": {
       "interval": 5,
       "wait_timeout": 240,
-      "gas_limit": 2500000,
-      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
+      "gas_limit": 2500000
     },
     "execute_liquidation": {
       "interval": 5,
       "wait_timeout": 240,
-      "gas_limit": 2500000,
-      "fee_recipient": "0xCD8A1c9aCc980ae031456573e34dC05cD7daE6e3"
+      "gas_limit": 2500000
     }
   },
   "addresses": {

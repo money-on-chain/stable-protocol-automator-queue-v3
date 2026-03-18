@@ -8,7 +8,6 @@
       "interval": 5,
       "wait_timeout": 240,
       "gas_limit": 2500000,
-      "fee_recipient": "0xdbB17D400aaE10dC96F4fcCbA8E528F959336637",
       "cloudwatch": {
         "metric_name": "FLIPMONEY-QUEUE",
         "dimensions_name": "JOBS",
