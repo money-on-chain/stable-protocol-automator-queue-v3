@@ -88,9 +88,9 @@ class Automator(PendingTransactionsTasksManager):
                 return task_result
 
             # check if is valid price before send
-            if not self.is_valid_tp_price():
-                log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-                return task_result
+            # if not self.is_valid_tp_price():
+            #     log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
+            #     return task_result
 
             info_transaction = self.info_tx()
 
