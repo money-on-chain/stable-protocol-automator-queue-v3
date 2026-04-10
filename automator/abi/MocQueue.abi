@@ -1,2382 +1,2492 @@
 [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [],
-      "name": "BucketAlreadyRegistered",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "ExecutionFeePaymentFailed",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "InvalidAddress",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "InvalidValue",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "NotAuthorizedChanger",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "NotMocBucket",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "NotMocMultiCollateralGuard",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "NotWhenPaused",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "OnlyPauser",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "OnlyWhilePaused",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "Unstoppable",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "expectedValue",
-          "type": "uint256"
-        }
-      ],
-      "name": "WrongExecutionFee",
-      "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "previousAdmin",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "newAdmin",
-          "type": "address"
-        }
-      ],
-      "name": "AdminChanged",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "beacon",
-          "type": "address"
-        }
-      ],
-      "name": "BeaconUpgraded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint8",
-          "name": "version",
-          "type": "uint8"
-        }
-      ],
-      "name": "Initialized",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "bytes4",
-          "name": "errorCode_",
-          "type": "bytes4"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "msg_",
-          "type": "string"
-        }
-      ],
-      "name": "OperationError",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "executor",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "OperationExecuted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "bucket_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "enum MocQueueExecFees.OperType",
-          "name": "operType_",
-          "type": "uint8"
-        }
-      ],
-      "name": "OperationQueued",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "Paused",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TCMinted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TCRedeemed",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TCSwappedForTP",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TCandTPMinted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TCandTPRedeemed",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TPMinted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qAC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TPRedeemed",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tp_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTP_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTC_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TPSwappedForTC",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tpFrom_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "tpTo_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender_",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTPfrom_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qTPto_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACfee_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeToken_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qACVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "qFeeTokenVendorMarkup_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "vendor_",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "TPSwappedForTP",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "operId_",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "bytes",
-          "name": "reason_",
-          "type": "bytes"
-        }
-      ],
-      "name": "UnhandledError",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "Unpaused",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "implementation",
-          "type": "address"
-        }
-      ],
-      "name": "Upgraded",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract IGovernor",
-          "name": "newGovernor_",
-          "type": "address"
-        }
-      ],
-      "name": "changeGovernor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum MocQueueExecFees.OperType",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "name": "execCost",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "executor_",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "maxOperPerBatch_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "blocksSinceLastPublication_",
-          "type": "uint256"
-        }
-      ],
-      "name": "execute",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "totalExecutionFee",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalOperExecuted",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "firstOperId",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum MocQueueExecFees.OperType",
-          "name": "operType_",
-          "type": "uint8"
-        }
-      ],
-      "name": "getExecFee",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "currentExecFee",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "governor",
-      "outputs": [
-        {
-          "internalType": "contract IGovernor",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "operIdCount_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "firstOperId_",
-          "type": "uint256"
-        }
-      ],
-      "name": "initOperId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "governor_",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "pauser_",
-          "type": "address"
-        },
-        {
-          "internalType": "contract MocMultiCollateralGuard",
-          "name": "mocMultiCollateralGuard_",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "minOperWaitingBlk_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "maxOperWaitingBlk_",
-          "type": "uint256"
-        },
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tcMintExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tcRedeemExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tpMintExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tpRedeemExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTPforTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTPforTCExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTCforTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "redeemTCandTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "mintTCandTPExecCost",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct MocQueueExecFees.InitializeMocQueueExecCostsParams",
-          "name": "mocQueueExecCostsParams_",
-          "type": "tuple"
-        }
-      ],
-      "name": "initialize",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "isEmpty",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "makeStoppable",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "makeUnstoppable",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "maxOperWaitingBlk",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "minOperWaitingBlk",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "mocMultiCollateralGuard",
-      "outputs": [
-        {
-          "internalType": "contract MocMultiCollateralGuard",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "mocOperations",
-      "outputs": [
-        {
-          "internalType": "contract MocOperations",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "operIdCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsMintTC",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "qTC",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsMintTCandTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsMintTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsRedeemTC",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "qTC",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsRedeemTCandTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTC",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsRedeemTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsSwapTCforTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTC",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTPmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsSwapTPforTC",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tp",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTCmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "operationsSwapTPforTP",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "tpFrom",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "tpTo",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qTPmin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "qACmax",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "vendor",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "opersInfo",
-      "outputs": [
-        {
-          "internalType": "enum MocQueueExecFees.OperType",
-          "name": "operType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint248",
-          "name": "queuedBlk",
-          "type": "uint248"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "pause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "paused",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "pauser",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "proxiableUUID",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "qTC",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCore.MintTCParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueMintTC",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.MintTCandTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueMintTCandTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCore.MintTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueMintTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "qTC",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCore.RedeemTCParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueRedeemTC",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTC",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.RedeemTCandTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueRedeemTCandTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.RedeemTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueRedeemTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTC",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTPmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.SwapTCforTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueSwapTCforTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tp",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTCmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.SwapTPforTCParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueSwapTPforTC",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "tpFrom",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "tpTo",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTP",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qTPmin",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "qACmax",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "sender",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "vendor",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct MocCommons.SwapTPforTPParams",
-          "name": "params",
-          "type": "tuple"
-        }
-      ],
-      "name": "queueSwapTPforTP",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "operId",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "blocksSinceLastPublication_",
-          "type": "uint256"
-        }
-      ],
-      "name": "readyToExecute",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MocOperations",
-          "name": "bucket_",
-          "type": "address"
-        }
-      ],
-      "name": "registerBucket",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "maxOperWaitingBlk_",
-          "type": "uint256"
-        }
-      ],
-      "name": "setMaxOperWaitingBlk",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "minOperWaitingBlk_",
-          "type": "uint256"
-        }
-      ],
-      "name": "setMinOperWaitingBlk",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MocMultiCollateralGuard",
-          "name": "mocMultiCollateralGuardAddress_",
-          "type": "address"
-        }
-      ],
-      "name": "setMocMultiCollateralGuard",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newPauser_",
-          "type": "address"
-        }
-      ],
-      "name": "setPauser",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "stoppable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "unpause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tcMintExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tcRedeemExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tpMintExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tpRedeemExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTPforTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTPforTCExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "swapTCforTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "redeemTCandTPExecCost",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "mintTCandTPExecCost",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct MocQueueExecFees.InitializeMocQueueExecCostsParams",
-          "name": "mocQueueExecCostsParams_",
-          "type": "tuple"
-        }
-      ],
-      "name": "updateExecutionCosts",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newImplementation",
-          "type": "address"
-        }
-      ],
-      "name": "upgradeTo",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newImplementation",
-          "type": "address"
-        },
-        {
-          "internalType": "bytes",
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "upgradeToAndCall",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum MocQueueExecFees.OperType",
-          "name": "operType_",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "execFee_",
-          "type": "uint256"
-        }
-      ],
-      "name": "verifyExecFee",
-      "outputs": [],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "BucketAlreadyRegistered",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ExecutionFeePaymentFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidValue",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotAuthorizedChanger",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotMocBucket",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotMocMultiCollateralGuard",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotWhenPaused",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyPauser",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyWhilePaused",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Unstoppable",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "expectedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "WrongExecutionFee",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      }
+    ],
+    "name": "ACUnlockFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "AdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
+    "name": "BeaconUpgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes4",
+        "name": "errorCode_",
+        "type": "bytes4"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "msg_",
+        "type": "string"
+      }
+    ],
+    "name": "OperationError",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "OperationExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "bucket_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "operType_",
+        "type": "uint8"
+      }
+    ],
+    "name": "OperationQueued",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TCMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TCRedeemed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TCSwappedForTP",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACtoMintTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACtoMintTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TCandTPMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACtoRedeemTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACtoRedeemTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TCandTPRedeemed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TPMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qAC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TPRedeemed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tp_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTP_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTC_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TPSwappedForTC",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tpFrom_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tpTo_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender_",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTPfrom_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qTPto_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACfee_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeToken_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qACVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "qFeeTokenVendorMarkup_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vendor_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "TPSwappedForTP",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operId_",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "reason_",
+        "type": "bytes"
+      }
+    ],
+    "name": "UnhandledError",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "Upgraded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGovernor",
+        "name": "newGovernor_",
+        "type": "address"
+      }
+    ],
+    "name": "changeGovernor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "execCost",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "executor_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxOperPerBatch_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "blocksSinceLastPublication_",
+        "type": "uint256"
+      }
+    ],
+    "name": "execute",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalExecutionFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalOperExecuted",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "firstOperId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "operType_",
+        "type": "uint8"
+      }
+    ],
+    "name": "getExecFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "currentExecFee",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "governor",
+    "outputs": [
+      {
+        "internalType": "contract IGovernor",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "operIdCount_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "firstOperId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "initOperId",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "governor_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "pauser_",
+        "type": "address"
+      },
+      {
+        "internalType": "contract MocMultiCollateralGuard",
+        "name": "mocMultiCollateralGuard_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minOperWaitingBlk_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxOperWaitingBlk_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tcMintExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tcRedeemExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tpMintExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tpRedeemExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTPforTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTPforTCExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTCforTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "redeemTCandTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mintTCandTPExecCost",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MocQueueExecFees.InitializeMocQueueExecCostsParams",
+        "name": "mocQueueExecCostsParams_",
+        "type": "tuple"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isEmpty",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "makeStoppable",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "makeUnstoppable",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxOperWaitingBlk",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minOperWaitingBlk",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mocMultiCollateralGuard",
+    "outputs": [
+      {
+        "internalType": "contract MocMultiCollateralGuard",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mocOperations",
+    "outputs": [
+      {
+        "internalType": "contract MocOperations",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "operIdCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsMintTC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "qTC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsMintTCandTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsMintTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsRedeemTC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "qTC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsRedeemTCandTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsRedeemTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsSwapTCforTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTPmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsSwapTPforTC",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTCmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "operationsSwapTPforTP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tpFrom",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "tpTo",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTP",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qTPmin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vendor",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "opersInfo",
+    "outputs": [
+      {
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "operType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint248",
+        "name": "queuedBlk",
+        "type": "uint248"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pauser",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "qTC",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCore.MintTCParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueMintTC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.MintTCandTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueMintTCandTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCore.MintTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueMintTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "qTC",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCore.RedeemTCParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueRedeemTC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTC",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.RedeemTCandTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueRedeemTCandTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.RedeemTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueRedeemTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTC",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTPmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.SwapTCforTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueSwapTCforTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTCmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.SwapTPforTCParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueSwapTPforTC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tpFrom",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tpTo",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTP",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qTPmin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "qACmax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vendor",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MocCommons.SwapTPforTPParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "queueSwapTPforTP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "blocksSinceLastPublication_",
+        "type": "uint256"
+      }
+    ],
+    "name": "readyToExecute",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract MocOperations",
+        "name": "bucket_",
+        "type": "address"
+      }
+    ],
+    "name": "registerBucket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "senderLockedFunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "lockedFunds",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "maxOperWaitingBlk_",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMaxOperWaitingBlk",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minOperWaitingBlk_",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinOperWaitingBlk",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract MocMultiCollateralGuard",
+        "name": "mocMultiCollateralGuardAddress_",
+        "type": "address"
+      }
+    ],
+    "name": "setMocMultiCollateralGuard",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newPauser_",
+        "type": "address"
+      }
+    ],
+    "name": "setPauser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stoppable",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalLockedFunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tcMintExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tcRedeemExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tpMintExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tpRedeemExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTPforTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTPforTCExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "swapTCforTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "redeemTCandTPExecCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mintTCandTPExecCost",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MocQueueExecFees.InitializeMocQueueExecCostsParams",
+        "name": "mocQueueExecCostsParams_",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateExecutionCosts",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "upgradeTo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "operType_",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "qACTotal_",
+        "type": "uint256"
+      }
+    ],
+    "name": "verifyExecFeeCoinbase",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "qACmax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentExecFee",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum MocQueueExecFees.OperType",
+        "name": "operType_",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "execFee_",
+        "type": "uint256"
+      }
+    ],
+    "name": "verifyExecFeeRC20",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
