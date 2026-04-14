@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.7'
+__VERSION__ = '1.0.8'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))

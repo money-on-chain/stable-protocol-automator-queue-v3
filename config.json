@@ -21,11 +21,11 @@
     }
   },
   "addresses": {
-    "MocMultiCollateralGuard": "0x29166156f32dD3ac435FeEe0028Aaa4151Bd8908"
+    "MocMultiCollateralGuard": "0xBc3669954b4c513140294ECF9B7b540cf964f0a3"
   },
   "collateral": [
     {
-      "name": "BPRO",
+      "name": "RIF",
       "type": "rc20"
     },
     {
@@ -35,10 +35,7 @@
   ],
   "pegged": [
     {
-      "name": "ARS"
-    },
-    {
-      "name": "COP"
+      "name": "USDRIF"
     }
   ]
 }

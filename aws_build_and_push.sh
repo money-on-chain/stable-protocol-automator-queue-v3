@@ -58,11 +58,6 @@ docker image build -t automator_queue_v2_$ENV -f Dockerfile --build-arg CONFIG=$
 
 echo "Build done!"
 
-# login into aws ecr
-$(aws ecr get-login --no-include-email --region $AWS_REGION)
-
-echo "Logging to AWS done!"
-
 docker tag automator_queue_v2_$ENV:latest $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/automator_queue_v2_$ENV:latest
 
 docker push $AWS_ID.dkr.ecr.$AWS_REGION.amazonaws.com/automator_queue_v2_$ENV:latest
