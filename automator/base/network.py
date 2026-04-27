@@ -242,6 +242,7 @@ class ConnectionManager(BaseConnectionManager):
             *tx_args,
             value=0,
             gas_limit=None,
+            gas_buffer=1.3,
             default_account=None,
             nonce=None,
             gas_price=None,
@@ -273,14 +274,17 @@ class ConnectionManager(BaseConnectionManager):
         else:
             transaction_dict['gasPrice'] = gas_price
 
-        if gas_limit:
-            transaction_dict['gas'] = gas_limit
-
-        if simulate:
-            call_dict = {'from': self.accounts[default_account].address, 'value': value}
-            if gas_limit:
-                call_dict['gas'] = gas_limit
+        if gas_limit is None:
+            # estimate_gas also simulates: raises ContractLogicError on revert
+            estimate_dict = {'from': self.accounts[default_account].address, 'value': value}
+            estimated_gas = built_fxn.estimate_gas(estimate_dict)
+            gas_limit = int(estimated_gas * gas_buffer)
+            self.log.info("Gas estimated: %d, with %.1fx buffer: %d", estimated_gas, gas_buffer, gas_limit)
+        elif simulate:
+            call_dict = {'from': self.accounts[default_account].address, 'value': value, 'gas': gas_limit}
             built_fxn.call(call_dict)
+
+        transaction_dict['gas'] = gas_limit
 
         transaction = built_fxn.build_transaction(transaction_dict)
 

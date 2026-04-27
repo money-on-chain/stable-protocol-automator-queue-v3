@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.9'
+__VERSION__ = '1.0.10'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -110,7 +110,7 @@ class Automator(PendingTransactionsTasksManager):
 
             try:
                 tx_hash = guard.execute(
-                    gas_limit=self.config['tasks']['execute']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
@@ -163,7 +163,7 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_micro_liquidation(
                     bucket,
-                    gas_limit=self.config['tasks']['execute_micro_liquidation']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
@@ -216,7 +216,7 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_liquidation(
                     bucket,
-                    gas_limit=self.config['tasks']['execute_liquidation']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
