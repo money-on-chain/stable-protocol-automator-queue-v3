@@ -87,8 +87,7 @@ class TransactionsTasksManager:
             #aws_put_metric_heart_beat(1)
             future.cancel()
         except Exception as e:
-            log.info("Function raised %s" % e)
-            log.info(e, exc_info=True)
+            log.error("Function raised %s" % e, exc_info=True)
             #aws_put_metric_heart_beat(1)
             future.cancel()
 
@@ -193,7 +192,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
 
                     log.info(
                         "{0}"
-                        " Hash: [{1}] "                        
+                        " Hash: [{1}] "
                         " Gas Price: [{2}] "
                         " Nonce: [{3}] "
                         " Elapsed: [{4}]".format(
@@ -205,6 +204,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                         )
                     )
 
+                    clear = True
                     continue
 
                 try:
@@ -292,7 +292,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                 # if last transaction pending nonce are ready in the blockchain account nonce
                 # clear the pending tx
                 clear = True
-                log.warn("Task :: {0} :: Pending nonce is not sync with blockchain address. "
+                log.warning("Task :: {0} :: Pending nonce is not sync with blockchain address. "
                          "Clearing now!. Pending Nonce: [{1}] Nonce: [{2}]".format(task.task_name,
                                                                                    last_pending_nonce,
                                                                                    last_used_nonce))

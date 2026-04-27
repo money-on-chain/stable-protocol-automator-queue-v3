@@ -143,12 +143,12 @@ class Automator(PendingTransactionsTasksManager):
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_micro_liquidation_available(bucket)
@@ -196,12 +196,12 @@ class Automator(PendingTransactionsTasksManager):
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_liquidation_available(bucket)
@@ -310,7 +310,7 @@ class AutomatorTasks(Automator):
             try:
                 tp_address = self.contracts_loaded["Moc"][bucket_index].tp_tokens(tp_i)
             except Web3RPCError:
-                continue
+                break
             if not tp_address:
                 break
             tp_index = self.contracts_loaded["Moc"][bucket_index].pegged_token_index(tp_address)
@@ -388,7 +388,7 @@ class AutomatorTasks(Automator):
                               args=[moc_bucket_addr],
                               wait=interval,
                               timeout=180,
-                              task_name="2. Execute liquidation: ({0}) {1}".format(
+                              task_name="3. Execute liquidation: ({0}) {1}".format(
                                   self.config['collateral'][count]['name'], moc_bucket_addr)
                               )
                 count += 1

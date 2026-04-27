@@ -1,6 +1,8 @@
 import os
 import json
 
+from dotenv import load_dotenv
+
 from automator.tasks import AutomatorTasks
 
 
@@ -17,6 +19,8 @@ def options_from_config(filename=None):
 
 
 if __name__ == '__main__':
+
+    load_dotenv()
 
     config = options_from_config()
 
