@@ -1,11 +1,10 @@
 from time import sleep
 import signal
-import functools
+from functools import partial, wraps
 import uuid
 from concurrent.futures import TimeoutError
 import datetime
 from web3 import Web3, exceptions
-from functools import wraps
 from pebble import sighandler, ProcessExpired, ThreadPool
 
 from .logger import log
@@ -16,9 +15,7 @@ def _gas_price_wei(tx):
 
 
 class TerminateSignal(Exception):
-    """Traceback wrapper for exceptions in remote process.
-    Exception.__cause__ requires a BaseException subclass.
-    """
+    """Raised by the signal handler to trigger a graceful shutdown of the task loop."""
     pass
 
 
@@ -59,7 +56,7 @@ class TransactionsTasksManager:
 
     def add_task(self, func, args=None, kwargs=None, wait=1, timeout=180, tid=None, task_name='Task N'):
 
-        if not tid:
+        if tid is None:
             tid = uuid.uuid4()
 
         task = Task(func, args=args, kwargs=kwargs, wait=wait, timeout=timeout, task_name=task_name)
@@ -98,7 +95,7 @@ class TransactionsTasksManager:
                 task.running = True
                 task.kwargs["task"] = task
                 future = pool.schedule(task.func, args=task.args, kwargs=task.kwargs)
-                future.add_done_callback(functools.partial(self.on_task_done, task=task))
+                future.add_done_callback(partial(self.on_task_done, task=task))
 
     def start_loop(self):
 
