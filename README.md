@@ -1,6 +1,6 @@
 # Stable Protocol Automator Queue Executor v3 (Multicollateral)
 
-## Warning: This is only for version 3 of the main contracts.
+### Warning: This is only for version 3 of the main contracts.
 
 This is a backend queue executor job. Periodic tasks that runs different jobs, 
 that call the contracts and asks if they are ready to execute it. This jobs 
@@ -80,18 +80,3 @@ docker run -d \
   automator
 ```
 
-
-### Contracts
-
-
-**Stable protocol core v2**
-
-*[https://github.com/money-on-chain/stable-protocol-core-v2](https://github.com/money-on-chain/stable-protocol-core-v2)*
-
-**RIF on Chain implementation v2**
-
-*[https://github.com/money-on-chain/stable-protocol-roc-v2](https://github.com/money-on-chain/stable-protocol-roc-v2)*
-
-**Flipmoney implementation v2**
-
-*[https://github.com/money-on-chain/stable-protocol-roc-v2](https://github.com/money-on-chain/stable-protocol-roc-v2)*

@@ -1,6 +1,6 @@
 import decimal
 from web3 import Web3
-from web3.exceptions import Web3RPCError
+from web3.exceptions import Web3RPCError, ContractLogicError
 import datetime
 
 from .contracts import MocMultiCollateralGuard, MocCACoinbase, MocCARC20, PriceProvider
@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.8'
+__VERSION__ = '1.0.9'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -116,7 +116,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except (ValueError, Web3RPCError) as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -169,7 +169,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except (ValueError, Web3RPCError) as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -222,7 +222,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except (ValueError, Web3RPCError) as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 

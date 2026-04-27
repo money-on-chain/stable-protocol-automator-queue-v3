@@ -246,7 +246,8 @@ class ConnectionManager(BaseConnectionManager):
             nonce=None,
             gas_price=None,
             max_fee_per_gas=None,
-            max_priority_fee_per_gas=None):
+            max_priority_fee_per_gas=None,
+            simulate=True):
         """Contract agnostic transaction function with extras"""
 
         if default_account is None:
@@ -274,6 +275,12 @@ class ConnectionManager(BaseConnectionManager):
 
         if gas_limit:
             transaction_dict['gas'] = gas_limit
+
+        if simulate:
+            call_dict = {'from': self.accounts[default_account].address, 'value': value}
+            if gas_limit:
+                call_dict['gas'] = gas_limit
+            built_fxn.call(call_dict)
 
         transaction = built_fxn.build_transaction(transaction_dict)
 
