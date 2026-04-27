@@ -97,7 +97,7 @@ class Automator(PendingTransactionsTasksManager):
         return valid
 
     @on_pending_transactions
-    def execute(self, task=None, global_manager=None, task_result=None):
+    def execute(self, task=None, task_result=None):
 
         guard = self.contracts_loaded["MocMultiCollateralGuard"]
         if not guard.paused() and self.are_valid_all_bucket_prices() and guard.ready_to_execute():
@@ -116,7 +116,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -138,7 +138,7 @@ class Automator(PendingTransactionsTasksManager):
         return task_result
 
     @on_pending_transactions
-    def execute_micro_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
+    def execute_micro_liquidation(self, bucket, task=None, task_result=None):
 
         # check if is valid price before send
         if not self.is_valid_tp_price():
@@ -169,7 +169,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -191,7 +191,7 @@ class Automator(PendingTransactionsTasksManager):
         return task_result
 
     @on_pending_transactions
-    def execute_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
+    def execute_liquidation(self, bucket, task=None, task_result=None):
 
         # check if is valid price before send
         if not self.is_valid_tp_price():
@@ -222,7 +222,7 @@ class Automator(PendingTransactionsTasksManager):
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
