@@ -1,12 +1,10 @@
 from time import sleep
 import signal
-import functools
+from functools import partial, wraps
 import uuid
 from concurrent.futures import TimeoutError
 import datetime
-from multiprocessing import Manager
 from web3 import Web3, exceptions
-from functools import wraps
 from pebble import sighandler, ProcessExpired, ThreadPool
 
 from .logger import log
@@ -17,9 +15,7 @@ def _gas_price_wei(tx):
 
 
 class TerminateSignal(Exception):
-    """Traceback wrapper for exceptions in remote process.
-    Exception.__cause__ requires a BaseException subclass.
-    """
+    """Raised by the signal handler to trigger a graceful shutdown of the task loop."""
     pass
 
 
@@ -46,8 +42,6 @@ class Task:
         self.result = None
         self.shutdown = False
         self.last_run = datetime.datetime.now()
-        #self.tx_receipt = None
-        #self.tx_receipt_timestamp = None
         self.pending_transactions = None
         self.task_name = task_name
 
@@ -62,7 +56,7 @@ class TransactionsTasksManager:
 
     def add_task(self, func, args=None, kwargs=None, wait=1, timeout=180, tid=None, task_name='Task N'):
 
-        if not tid:
+        if tid is None:
             tid = uuid.uuid4()
 
         task = Task(func, args=args, kwargs=kwargs, wait=wait, timeout=timeout, task_name=task_name)
@@ -79,23 +73,19 @@ class TransactionsTasksManager:
                 elif 'pending_transactions' in task.result:
                     task.pending_transactions = task.result['pending_transactions']
         except TimeoutError as e:
-            log.info("Function took longer than %d seconds. Task going to cancel!" % e.args[1])
-            #aws_put_metric_heart_beat(1)
+            log.warning("Function took longer than %d seconds. Task going to cancel!" % e.args[1])
             future.cancel()
         except ProcessExpired as e:
-            log.info("%s. Exit code: %d" % (e, e.exitcode))
-            #aws_put_metric_heart_beat(1)
+            log.error("%s. Exit code: %d" % (e, e.exitcode))
             future.cancel()
         except Exception as e:
-            log.info("Function raised %s" % e)
-            log.info(e, exc_info=True)
-            #aws_put_metric_heart_beat(1)
+            log.error("Function raised %s" % e, exc_info=True)
             future.cancel()
 
         task.last_run = datetime.datetime.now()
         task.running = False
 
-    def schedule_task(self, pool, task, global_manager=None):
+    def schedule_task(self, pool, task):
 
         if not task.running:
             # shutdown task manager!
@@ -103,28 +93,23 @@ class TransactionsTasksManager:
                 raise TerminateSignal
             if task.last_run + datetime.timedelta(seconds=task.wait) <= datetime.datetime.now():
                 task.running = True
-                # pass task object as vars to run funtion
                 task.kwargs["task"] = task
-                task.kwargs["global_manager"] = global_manager
                 future = pool.schedule(task.func, args=task.args, kwargs=task.kwargs)
-                future.add_done_callback(functools.partial(self.on_task_done, task=task))
+                future.add_done_callback(partial(self.on_task_done, task=task))
 
     def start_loop(self):
 
         log.info("Start Task jobs loop")
-        global_manager = Manager().dict()
 
         with ThreadPool(max_workers=self.max_workers, max_tasks=self.max_tasks) as pool:
             try:
                 while True:
                     if self.tasks:
                         for key in self.tasks:
-                            self.schedule_task(pool, self.tasks[key], global_manager=global_manager)
+                            self.schedule_task(pool, self.tasks[key])
                     sleep(0.1)
             except TerminateSignal:
                 log.info("Terminal Signal received... Going to shutdown... stop pooling now!")
-                #pool.stop()
-                # wait to finish tasks ...
                 pool.close()
                 pool.join(timeout=self.timeout)
 
@@ -193,7 +178,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
 
                     log.info(
                         "{0}"
-                        " Hash: [{1}] "                        
+                        " Hash: [{1}] "
                         " Gas Price: [{2}] "
                         " Nonce: [{3}] "
                         " Elapsed: [{4}]".format(
@@ -205,6 +190,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                         )
                     )
 
+                    clear = True
                     continue
 
                 try:
@@ -292,7 +278,7 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
                 # if last transaction pending nonce are ready in the blockchain account nonce
                 # clear the pending tx
                 clear = True
-                log.warn("Task :: {0} :: Pending nonce is not sync with blockchain address. "
+                log.warning("Task :: {0} :: Pending nonce is not sync with blockchain address. "
                          "Clearing now!. Pending Nonce: [{1}] Nonce: [{2}]".format(task.task_name,
                                                                                    last_pending_nonce,
                                                                                    last_used_nonce))
@@ -303,20 +289,3 @@ class PendingTransactionsTasksManager(TransactionsTasksManager):
         return task.pending_transactions, confirmed_txs
 
 
-def test_task_1(task_id):
-    print("Start task 1 id: {}".format(task_id))
-    sleep(2)
-    print("End task 1 id: {}".format(task_id))
-
-
-def test_task_2(task_id):
-    print("Start task 2 id: {}".format(task_id))
-    sleep(10)
-    print("End task 2 id: {}".format(task_id))
-
-
-if __name__ == '__main__':
-    jobs = TransactionsTasksManager()
-    jobs.add_task(test_task_1, args=[1])
-    jobs.add_task(test_task_2, args=[5])
-    jobs.start_loop()

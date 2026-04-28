@@ -1,6 +1,8 @@
 import os
 import json
 
+from dotenv import load_dotenv
+
 from automator.tasks import AutomatorTasks
 
 
@@ -18,11 +20,16 @@ def options_from_config(filename=None):
 
 if __name__ == '__main__':
 
+    load_dotenv()
+
     config = options_from_config()
 
     # override config default
     if 'APP_CONFIG' in os.environ:
-        config = json.loads(os.environ['APP_CONFIG'])
+        try:
+            config = json.loads(os.environ['APP_CONFIG'])
+        except json.JSONDecodeError as err:
+            raise SystemExit("Invalid APP_CONFIG: not valid JSON — %s" % err)
 
     # override connection uri from env
     if 'APP_CONNECTION_URI' in os.environ:

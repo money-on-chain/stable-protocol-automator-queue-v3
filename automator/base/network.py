@@ -71,41 +71,54 @@ class ConnectionManager(BaseConnectionManager):
                                       request_cache_validation_threshold=60 * 60,  # 1 hour
                                       request_kwargs={'timeout': self.request_timeout}))
 
+    def _load_account_from_key(self, raw_key):
+        """Load an Account from a private key string, returning None on failure."""
+        try:
+            return Account().from_key(raw_key.strip())
+        except Exception:
+            self.log.error("Failed to load account: invalid private key format")
+            return None
+
     def scan_accounts(self):
         """ Accounts from config or environment"""
 
         accounts = list()
 
         if 'ACCOUNT_PK_SECRET' in os.environ:
-            # obtain from environment if exist instead
-            private_key = os.environ['ACCOUNT_PK_SECRET']
+            # Pop removes the key from the environment so child processes cannot inherit it
+            private_key = os.environ.pop('ACCOUNT_PK_SECRET')
 
             l_priv = private_key.split(',')
             if len(l_priv) > 1:
-                # this is a method:
                 # ACCOUNT_PK_SECRET=PK1,PK2,PK3
                 for a_priv in l_priv:
-                    account = Account().from_key(a_priv)
-                    accounts.append(account)
+                    account = self._load_account_from_key(a_priv)
+                    if account:
+                        accounts.append(account)
             else:
                 # Simple PK: ACCOUNT_PK_SECRET=PK
-                account = Account().from_key(private_key)
-                accounts.append(account)
+                account = self._load_account_from_key(private_key)
+                if account:
+                    accounts.append(account)
+
+            del private_key
 
             # scan 10 accounts like this:
             # ACCOUNT_PK_SECRET_1, ACCOUNT_PK_SECRET_2 .. ACCOUNT_PK_SECRET_9
             for numb in range(1, 10):
                 env_pk = 'ACCOUNT_PK_SECRET_{}'.format(numb)
                 if env_pk in os.environ:
-                    private_key = os.environ[env_pk]
-                    account = Account().from_key(private_key)
-                    accounts.append(account)
+                    private_key = os.environ.pop(env_pk)
+                    account = self._load_account_from_key(private_key)
+                    del private_key
+                    if account:
+                        accounts.append(account)
 
         if accounts:
             for acc in accounts:
                 self.log.info("Added account address: {0}".format(acc.address))
         else:
-            self.log.info("No address account added!")
+            self.log.warning("No address account added!")
 
         self.accounts = accounts
 
@@ -229,22 +242,24 @@ class ConnectionManager(BaseConnectionManager):
             *tx_args,
             value=0,
             gas_limit=None,
+            gas_buffer=1.3,
             default_account=None,
             nonce=None,
             gas_price=None,
             max_fee_per_gas=None,
-            max_priority_fee_per_gas=None):
+            max_priority_fee_per_gas=None,
+            simulate=True):
         """Contract agnostic transaction function with extras"""
 
-        if not default_account:
+        if default_account is None:
             default_account = self.default_account
 
         built_fxn = tx_function(*tx_args)
 
-        if not nonce:
+        if nonce is None:
             nonce = self.web3.eth.get_transaction_count(self.accounts[default_account].address, "pending")
 
-        if not gas_price:
+        if gas_price is None:
             gas_price = self.gas_price
 
         transaction_dict = {
@@ -259,8 +274,17 @@ class ConnectionManager(BaseConnectionManager):
         else:
             transaction_dict['gasPrice'] = gas_price
 
-        if gas_limit:
-            transaction_dict['gas'] = gas_limit
+        if gas_limit is None:
+            # estimate_gas also simulates: raises ContractLogicError on revert
+            estimate_dict = {'from': self.accounts[default_account].address, 'value': value}
+            estimated_gas = built_fxn.estimate_gas(estimate_dict)
+            gas_limit = int(estimated_gas * gas_buffer)
+            self.log.info("Gas estimated: %d, with %.1fx buffer: %d", estimated_gas, gas_buffer, gas_limit)
+        elif simulate:
+            call_dict = {'from': self.accounts[default_account].address, 'value': value, 'gas': gas_limit}
+            built_fxn.call(call_dict)
+
+        transaction_dict['gas'] = gas_limit
 
         transaction = built_fxn.build_transaction(transaction_dict)
 

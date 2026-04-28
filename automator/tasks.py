@@ -1,6 +1,6 @@
 import decimal
 from web3 import Web3
-from web3.exceptions import Web3RPCError
+from web3.exceptions import Web3RPCError, ContractLogicError
 import datetime
 
 from .contracts import MocMultiCollateralGuard, MocCACoinbase, MocCARC20, PriceProvider
@@ -10,7 +10,7 @@ from .tasks_manager import PendingTransactionsTasksManager, on_pending_transacti
 from .logger import log
 
 
-__VERSION__ = '1.0.8'
+__VERSION__ = '1.0.10'
 
 
 log.info("Starting Stable Protocol Queue Automator version {0}".format(__VERSION__))
@@ -97,7 +97,7 @@ class Automator(PendingTransactionsTasksManager):
         return valid
 
     @on_pending_transactions
-    def execute(self, task=None, global_manager=None, task_result=None):
+    def execute(self, task=None, task_result=None):
 
         guard = self.contracts_loaded["MocMultiCollateralGuard"]
         if not guard.paused() and self.are_valid_all_bucket_prices() and guard.ready_to_execute():
@@ -110,13 +110,13 @@ class Automator(PendingTransactionsTasksManager):
 
             try:
                 tx_hash = guard.execute(
-                    gas_limit=self.config['tasks']['execute']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -138,17 +138,17 @@ class Automator(PendingTransactionsTasksManager):
         return task_result
 
     @on_pending_transactions
-    def execute_micro_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
+    def execute_micro_liquidation(self, bucket, task=None, task_result=None):
 
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_micro_liquidation_available(bucket)
@@ -163,13 +163,13 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_micro_liquidation(
                     bucket,
-                    gas_limit=self.config['tasks']['execute_micro_liquidation']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -191,17 +191,17 @@ class Automator(PendingTransactionsTasksManager):
         return task_result
 
     @on_pending_transactions
-    def execute_liquidation(self, bucket, task=None, global_manager=None, task_result=None):
+    def execute_liquidation(self, bucket, task=None, task_result=None):
 
         # check if is valid price before send
         if not self.is_valid_tp_price():
             log.error("Task :: {0} :: Error not valid TP price provider!".format(task.task_name))
-            return
+            return task_result
 
         # check if is valid ac coinbase price before send
         if not self.is_valid_ac_coinbase_price():
             log.error("Task :: {0} :: Error not valid AC Coinbase price provider!".format(task.task_name))
-            return
+            return task_result
 
         # If ready to execute the micro liquidation?
         ready_to_execute = self.contracts_loaded["MocMultiCollateralGuard"].is_liquidation_available(bucket)
@@ -216,13 +216,13 @@ class Automator(PendingTransactionsTasksManager):
             try:
                 tx_hash = self.contracts_loaded["MocMultiCollateralGuard"].execute_liquidation(
                     bucket,
-                    gas_limit=self.config['tasks']['execute_liquidation']['gas_limit'],
+                    gas_buffer=self.config.get('gas_buffer', 1.3),
                     gas_price=int(info_transaction['calculated_gas_price'] * 10 ** 18),
                     max_fee_per_gas=info_transaction['max_fee_per_gas'],
                     max_priority_fee_per_gas=info_transaction['max_priority_fee_per_gas'],
                     nonce=info_transaction['nonce']
                 )
-            except ValueError as err:
+            except (ValueError, Web3RPCError, ContractLogicError) as err:
                 log.error("Task :: {0} :: Error sending transaction! \n {1}".format(task.task_name, err))
                 return task_result
 
@@ -310,7 +310,7 @@ class AutomatorTasks(Automator):
             try:
                 tp_address = self.contracts_loaded["Moc"][bucket_index].tp_tokens(tp_i)
             except Web3RPCError:
-                continue
+                break
             if not tp_address:
                 break
             tp_index = self.contracts_loaded["Moc"][bucket_index].pegged_token_index(tp_address)
@@ -388,7 +388,7 @@ class AutomatorTasks(Automator):
                               args=[moc_bucket_addr],
                               wait=interval,
                               timeout=180,
-                              task_name="2. Execute liquidation: ({0}) {1}".format(
+                              task_name="3. Execute liquidation: ({0}) {1}".format(
                                   self.config['collateral'][count]['name'], moc_bucket_addr)
                               )
                 count += 1

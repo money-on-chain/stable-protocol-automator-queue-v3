@@ -3,21 +3,19 @@
   "chain_id": 31,
   "timeout": 180,
   "gas_price_multiply_factor": 1.01,
+  "gas_buffer": 1.3,
   "tasks": {
     "execute": {
       "interval": 5,
-      "wait_timeout": 240,
-      "gas_limit": 2500000
+      "wait_timeout": 240
     },
     "execute_micro_liquidation": {
       "interval": 5,
-      "wait_timeout": 240,
-      "gas_limit": 2500000
+      "wait_timeout": 240
     },
     "execute_liquidation": {
       "interval": 5,
-      "wait_timeout": 240,
-      "gas_limit": 2500000
+      "wait_timeout": 240
     }
   },
   "addresses": {
