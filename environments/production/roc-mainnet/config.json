@@ -1,0 +1,39 @@
+{
+  "uri": "https://public-node.rsk.co",
+  "chain_id": 30,
+  "timeout": 180,
+  "gas_price_multiply_factor": 1.01,
+  "gas_buffer": 1.3,
+  "tasks": {
+    "execute": {
+      "interval": 2,
+      "wait_timeout": 240
+    },
+    "execute_micro_liquidation": {
+      "interval": 5,
+      "wait_timeout": 240
+    },
+    "execute_liquidation": {
+      "interval": 5,
+      "wait_timeout": 240
+    }
+  },
+  "addresses": {
+    "MocMultiCollateralGuard": "0x0237Ad1f0831b479a344E56646BC48B0885cF46F"
+  },
+  "collateral": [
+    {
+      "name": "RIF",
+      "type": "rc20"
+    },
+    {
+      "name": "DOC",
+      "type": "rc20"
+    }
+  ],
+  "pegged": [
+    {
+      "name": "USDRIF"
+    }
+  ]
+}
