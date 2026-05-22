@@ -2,6 +2,12 @@
 
 ### Warning: This is only for version 3 of the main contracts.
 
+| Project              | Version | V3 | 
+|----------------------|---------|----|
+| MOC (Money on Chain) | V1      | ❌  |
+| ROC (RIF on Chain)   | V3      | ✅  |
+
+
 This is a backend queue executor job. Periodic tasks that runs different jobs, 
 that call the contracts and asks if they are ready to execute it. This jobs 
 run async of the app, and call directly to the contract through node. 
