@@ -291,6 +291,9 @@ class PriceProvider(Contract):
     contract_name = 'PriceProvider'
     contract_abi = Contract.content_abi_file(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), 'abi/MoCMedianizer.abi'))
+    # CoinPairPrice permits `peek` calls from this sentinel address without
+    # requiring the RPC caller to be explicitly whitelisted.
+    PEEK_CALLER = '0x0000000000000000000000000000000000000001'
 
     def __init__(self, connection_manager, contract_address=None, contract_abi=None, contract_bin=None):
 
@@ -303,4 +306,4 @@ class PriceProvider(Contract):
         self.load_contract()
 
     def peek(self):
-        return self.sc.functions.peek().call()
+        return self.sc.functions.peek().call({'from': self.PEEK_CALLER})
